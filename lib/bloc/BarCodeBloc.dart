@@ -4,9 +4,13 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class BarCodeBlock{
+  String result = "Vazio";
 
-  Future<String> resultRequest()async{
-    return readBarCode();
+
+   resultRequest(){
+    return readBarCode().then((value){
+      result = value;
+    });
   }
 
   Future<String> readBarCode() async{

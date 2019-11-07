@@ -7,22 +7,18 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
-  var bloc = new BarCodeBlock();
-
+  var bloc;
   String result = "Vazio";
 
   @override
   void setState(fn) {
     super.setState(fn);
-
-    bloc.resultRequest().then((val) => setState(() {
-          result = val;
-        }));
   }
 
   @override
   void initState() {
     super.initState();
+     bloc = new BarCodeBlock();
   }
 
   @override
@@ -48,29 +44,13 @@ class _InitialPageState extends State<InitialPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  bloc.readBarCode();
-                });
+                _openBarCode();
               },
             ),
           ),
           Container(
             margin: EdgeInsets.all(10.0),
-            child: new FutureBuilder(
-              future: bloc.readBarCode(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return new Text('loading...');
-                  default:
-                    if (snapshot.hasError)
-                      return new Text('Error: ${snapshot.error}');
-                    else
-                      return createListView(context, snapshot);
-                }
-              },
-            ),
+            child:Text(result)
           )
         ],
       ),
@@ -80,5 +60,13 @@ class _InitialPageState extends State<InitialPage> {
   Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
     String value = snapshot.data;
     return Text(value);
+  }
+
+  void _openBarCode(){
+    bloc.readBarCode().then((list) {
+      setState(() {
+        result = list;
+      });
+    });
   }
 }
